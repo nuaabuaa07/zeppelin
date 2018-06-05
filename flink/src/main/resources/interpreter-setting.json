@@ -23,5 +23,17 @@
       "language": "scala",
       "editOnDblClick": false
     }
+  },
+
+  {
+    "group": "flink",
+    "name": "sql",
+    "className": "org.apache.zeppelin.flink.FlinkSQLInterpreter",
+    "properties": {
+    },
+    "editor": {
+      "language": "sql",
+      "editOnDblClick": false
+    }
   }
 ]
