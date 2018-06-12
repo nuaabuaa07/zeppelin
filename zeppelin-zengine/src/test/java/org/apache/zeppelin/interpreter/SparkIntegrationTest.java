@@ -42,10 +42,10 @@ public class SparkIntegrationTest {
   @Parameterized.Parameters
   public static List<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"2.2.1"},
-        {"2.1.2"},
-        {"2.0.2"},
-        {"1.6.3"}
+        {"2.2.1"}
+//        {"2.1.2"},
+//        {"2.0.2"},
+//        {"1.6.3"}
     });
   }
 
@@ -143,7 +143,6 @@ public class SparkIntegrationTest {
     sparkInterpreterSetting.setProperty("zeppelin.pyspark.useIPython", "false");
     sparkInterpreterSetting.setProperty("PYSPARK_PYTHON", getPythonExec());
     sparkInterpreterSetting.setProperty("spark.driver.memory", "512m");
-
     testInterpreterBasics();
 
     // 1 yarn application launched
@@ -165,7 +164,6 @@ public class SparkIntegrationTest {
     sparkInterpreterSetting.setProperty("zeppelin.pyspark.useIPython", "false");
     sparkInterpreterSetting.setProperty("spark.pyspark.python", getPythonExec());
     sparkInterpreterSetting.setProperty("spark.driver.memory", "512m");
-
     testInterpreterBasics();
 
     // 1 yarn application launched
