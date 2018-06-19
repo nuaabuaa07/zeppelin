@@ -27,7 +27,6 @@ import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.python.IPythonInterpreter;
 import org.apache.zeppelin.python.PythonInterpreter;
-import org.apache.zeppelin.spark.dep.SparkDependencyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,63 +58,11 @@ public class PySparkInterpreter extends PythonInterpreter {
   @Override
   public void open() throws InterpreterException {
     setProperty("zeppelin.python.useIPython", getProperty("zeppelin.pyspark.useIPython", "true"));
-
-    // create SparkInterpreter in JVM side TODO(zjffdu) move to SparkInterpreter
-    DepInterpreter depInterpreter =
-        getInterpreterInTheSameSessionByClassName(DepInterpreter.class, false);
-    // load libraries from Dependency Interpreter
-    URL [] urls = new URL[0];
-    List<URL> urlList = new LinkedList<>();
-
-    if (depInterpreter != null) {
-      SparkDependencyContext depc = depInterpreter.getDependencyContext();
-      if (depc != null) {
-        List<File> files = depc.getFiles();
-        if (files != null) {
-          for (File f : files) {
-            try {
-              urlList.add(f.toURI().toURL());
-            } catch (MalformedURLException e) {
-              LOGGER.error("Error", e);
-            }
-          }
-        }
-      }
-    }
-
-    String localRepo = getProperty("zeppelin.interpreter.localRepo");
-    if (localRepo != null) {
-      File localRepoDir = new File(localRepo);
-      if (localRepoDir.exists()) {
-        File[] files = localRepoDir.listFiles();
-        if (files != null) {
-          for (File f : files) {
-            try {
-              urlList.add(f.toURI().toURL());
-            } catch (MalformedURLException e) {
-              LOGGER.error("Error", e);
-            }
-          }
-        }
-      }
-    }
-
-    urls = urlList.toArray(urls);
-    ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
-    try {
-      URLClassLoader newCl = new URLClassLoader(urls, oldCl);
-      Thread.currentThread().setContextClassLoader(newCl);
-      // must create spark interpreter after ClassLoader is set, otherwise the additional jars
-      // can not be loaded by spark repl.
-      this.sparkInterpreter = getInterpreterInTheSameSessionByClassName(SparkInterpreter.class);
-      setProperty("zeppelin.py4j.useAuth",
-          sparkInterpreter.getSparkVersion().isSecretSocketSupported() + "");
-      // create Python Process and JVM gateway
-      super.open();
-    } finally {
-      Thread.currentThread().setContextClassLoader(oldCl);
-    }
-
+    this.sparkInterpreter = getInterpreterInTheSameSessionByClassName(SparkInterpreter.class);
+    setProperty("zeppelin.py4j.useAuth",
+        sparkInterpreter.getSparkVersion().isSecretSocketSupported() + "");
+    // create Python Process and JVM gateway
+    super.open();
     if (!useIPython()) {
       // Initialize Spark in Python Process
       try {

@@ -24,14 +24,14 @@ import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.spark.sql.SQLContext
-import org.apache.spark.{JobProgressUtil, SparkConf, SparkContext}
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConverters._
-import scala.tools.nsc.interpreter.Completion.ScalaCompleter
+import scala.tools.nsc.interpreter.Completion
 import scala.util.control.NonFatal
 
 /**
@@ -59,7 +59,7 @@ abstract class BaseSparkScalaInterpreter(val conf: SparkConf,
 
   protected var sparkUrl: String = _
 
-  protected var scalaCompleter: ScalaCompleter = _
+  protected var scalaCompletion: Completion = _
 
   protected val interpreterOutput: InterpreterOutputStream
 
@@ -141,11 +141,7 @@ abstract class BaseSparkScalaInterpreter(val conf: SparkConf,
 
   protected def completion(buf: String,
                            cursor: Int,
-                           context: InterpreterContext): java.util.List[InterpreterCompletion] = {
-    val completions = scalaCompleter.complete(buf.substring(0, cursor), cursor).candidates
-      .map(e => new InterpreterCompletion(e, e, null))
-    scala.collection.JavaConversions.seqAsJavaList(completions)
-  }
+                           context: InterpreterContext): java.util.List[InterpreterCompletion]
 
   protected def getProgress(jobGroup: String, context: InterpreterContext): Int = {
     JobProgressUtil.progress(sc, jobGroup)
@@ -330,6 +326,18 @@ abstract class BaseSparkScalaInterpreter(val conf: SparkConf,
                            parameterTypes: Array[Class[_]],
                            parameters: Array[Object]): Object = {
     val method = obj.getClass.getMethod(name, parameterTypes: _ *)
+    method.setAccessible(true)
+    method.invoke(obj, parameters: _ *)
+  }
+
+  protected def callDeclaredMethod(obj: Object, name: String): Object = {
+    callDeclaredMethod(obj, name, Array.empty[Class[_]], Array.empty[Object])
+  }
+
+  protected def callDeclaredMethod(obj: Object, name: String,
+                           parameterTypes: Array[Class[_]],
+                           parameters: Array[Object]): Object = {
+    val method = obj.getClass.getDeclaredMethod(name, parameterTypes: _ *)
     method.setAccessible(true)
     method.invoke(obj, parameters: _ *)
   }

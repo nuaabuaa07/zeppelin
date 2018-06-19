@@ -30,7 +30,6 @@ import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterHookRegistry;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
-import org.apache.zeppelin.spark.dep.SparkDependencyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +71,7 @@ public class NewSparkInterpreter extends AbstractSparkInterpreter {
         properties.getProperty("zeppelin.spark.enableSupportedVersionCheck", "true"));
     innerInterpreterClassMap.put("2.10", "org.apache.zeppelin.spark.SparkScala210Interpreter");
     innerInterpreterClassMap.put("2.11", "org.apache.zeppelin.spark.SparkScala211Interpreter");
+    innerInterpreterClassMap.put("2.12", "org.apache.zeppelin.spark.SparkScala212Interpreter");
   }
 
   @Override
@@ -205,8 +205,12 @@ public class NewSparkInterpreter extends AbstractSparkInterpreter {
     String scalaVersionString = scala.util.Properties.versionString();
     if (scalaVersionString.contains("version 2.10")) {
       return "2.10";
-    } else {
+    } else if (scalaVersionString.contains("version 2.11")) {
       return "2.11";
+    } else if (scalaVersionString.contains("version 2.12")) {
+      return "2.12";
+    } else {
+      return scalaVersionString;
     }
   }
 
@@ -214,23 +218,8 @@ public class NewSparkInterpreter extends AbstractSparkInterpreter {
     return this.sc != null;
   }
 
-  private List<String> getDependencyFiles() throws InterpreterException {
+  private List<String> getDependencyFiles() {
     List<String> depFiles = new ArrayList<>();
-    // add jar from DepInterpreter
-    DepInterpreter depInterpreter = getParentSparkInterpreter().
-        getInterpreterInTheSameSessionByClassName(DepInterpreter.class, false);
-    if (depInterpreter != null) {
-      SparkDependencyContext depc = depInterpreter.getDependencyContext();
-      if (depc != null) {
-        List<File> files = depc.getFilesDist();
-        if (files != null) {
-          for (File f : files) {
-            depFiles.add(f.getAbsolutePath());
-          }
-        }
-      }
-    }
-
     // add jar from local repo
     String localRepo = getProperty("zeppelin.interpreter.localRepo");
     if (localRepo != null) {

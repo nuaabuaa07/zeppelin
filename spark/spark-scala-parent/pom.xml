@@ -36,9 +36,9 @@
 
     <properties>
         <spark.version>2.4.0</spark.version>
-        <scala.binary.version>2.11</scala.binary.version>
-        <scala.version>2.11.8</scala.version>
-        <scala.compile.version>${scala.binary.version}</scala.compile.version>
+        <spark.scala.binary.version>2.11</spark.scala.binary.version>
+        <spark.scala.version>2.11.8</spark.scala.version>
+        <saprk.scala.compile.version>${spark.scala.binary.version}</saprk.scala.compile.version>
     </properties>
 
     <dependencies>
@@ -57,21 +57,34 @@
 
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-repl_${scala.binary.version}</artifactId>
+            <artifactId>spark-repl_${spark.scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_${scala.binary.version}</artifactId>
+            <artifactId>spark-core_${spark.scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.thoughtworks.paranamer</groupId>
+                    <artifactId>paranamer</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <version>2.8</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-hive_${scala.binary.version}</artifactId>
+            <artifactId>spark-hive_${spark.scala.binary.version}</artifactId>
             <version>${spark.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -79,21 +92,21 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-compiler</artifactId>
-            <version>${scala.version}</version>
+            <version>${spark.scala.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
+            <version>${spark.scala.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-reflect</artifactId>
-            <version>${scala.version}</version>
+            <version>${spark.scala.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -114,8 +127,8 @@
     </dependencies>
 
     <build>
-        <plugins>
-
+        <pluginManagement>
+            <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -215,7 +228,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <scalaVersion>${scala.compile.version}</scalaVersion>
+                    <scalaVersion>${spark.scala.compile.version}</scalaVersion>
                     <args>
                         <arg>-unchecked</arg>
                         <arg>-deprecation</arg>
@@ -236,8 +249,8 @@
                     </javacArgs>
                 </configuration>
             </plugin>
-
-        </plugins>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

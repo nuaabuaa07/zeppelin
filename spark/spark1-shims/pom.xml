@@ -35,7 +35,7 @@
   <name>Zeppelin: Spark1 Shims</name>
 
   <properties>
-    <scala.binary.version>2.10</scala.binary.version>
+    <spark.scala.binary.version>2.10</spark.scala.binary.version>
     <spark.version>1.6.3</spark.version>
   </properties>
 
@@ -49,14 +49,14 @@
 
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_${scala.binary.version}</artifactId>
+      <artifactId>spark-core_${spark.scala.binary.version}</artifactId>
       <version>${spark.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.spark</groupId>
-      <artifactId>spark-sql_${scala.binary.version}</artifactId>
+      <artifactId>spark-sql_${spark.scala.binary.version}</artifactId>
       <version>${spark.version}</version>
       <scope>provided</scope>
     </dependency>

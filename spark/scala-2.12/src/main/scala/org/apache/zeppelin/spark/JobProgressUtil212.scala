@@ -17,9 +17,9 @@
 
 package org.apache.zeppelin.spark
 
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.SparkContext
 
-object JobProgressUtil {
+object JobProgressUtil212 {
 
   def progress(sc: SparkContext, jobGroup : String):Int = {
     val jobIds = sc.statusTracker.getJobIdsForGroup(jobGroup).toList

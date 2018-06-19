@@ -80,9 +80,17 @@ class SparkScala210Interpreter(override val conf: SparkConf,
       "org$apache$spark$repl$SparkILoop$$chooseReader",
       Array(settings.getClass), Array(settings)).asInstanceOf[InteractiveReader]
     setDeclaredField(sparkILoop, "org$apache$spark$repl$SparkILoop$$in", reader)
-    scalaCompleter = reader.completion.completer()
+    scalaCompletion = reader.completion
 
     createSparkContext()
+  }
+
+  protected def completion(buf: String,
+                           cursor: Int,
+                           context: InterpreterContext): java.util.List[InterpreterCompletion] = {
+    val completions = scalaCompletion.completer().complete(buf.substring(0, cursor), cursor).candidates
+      .map(e => new InterpreterCompletion(e, e, null))
+    scala.collection.JavaConversions.seqAsJavaList(completions)
   }
 
   override def close(): Unit = {
