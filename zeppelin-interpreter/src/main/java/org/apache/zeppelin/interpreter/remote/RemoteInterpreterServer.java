@@ -66,7 +66,6 @@ import org.apache.zeppelin.resource.DistributedResourcePool;
 import org.apache.zeppelin.resource.Resource;
 import org.apache.zeppelin.resource.ResourcePool;
 import org.apache.zeppelin.resource.ResourceSet;
-import org.apache.zeppelin.resource.WellKnownResourceName;
 import org.apache.zeppelin.scheduler.Job;
 import org.apache.zeppelin.scheduler.Job.Status;
 import org.apache.zeppelin.scheduler.JobListener;
@@ -648,15 +647,11 @@ public class RemoteInterpreterServer extends Thread
           }
         }
         // put result into resource pool
-        if (resultMessages.size() > 0) {
-          int lastMessageIndex = resultMessages.size() - 1;
-          if (resultMessages.get(lastMessageIndex).getType() == InterpreterResult.Type.TABLE) {
-            context.getResourcePool().put(
-                context.getNoteId(),
-                context.getParagraphId(),
-                WellKnownResourceName.ZeppelinTableResult.toString(),
-                resultMessages.get(lastMessageIndex));
-          }
+        if (context.getLocalProperties().containsKey("resourceName")) {
+          logger.info("Saving result into ResourcePool as: " +
+              context.getLocalProperties().get("resourceName"));
+          context.getResourcePool().put(
+              context.getLocalProperties().get("resourceName"), resultMessages);
         }
         return new InterpreterResult(result.code(), resultMessages);
       } finally {

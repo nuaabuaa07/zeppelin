@@ -17,6 +17,7 @@
 package org.apache.zeppelin.resource;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.Primitives;
 import org.apache.zeppelin.common.JsonSerializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,10 @@ public class Resource implements JsonSerializable {
     } else {
       return null;
     }
+  }
+
+  public <T> T get(Class<T> clazz) {
+    return Primitives.wrap(clazz).cast(r);
   }
 
   public boolean isSerializable() {

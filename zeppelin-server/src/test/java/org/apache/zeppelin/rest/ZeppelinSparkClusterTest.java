@@ -196,6 +196,7 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
     // test display DataFrame
     p = note.addNewParagraph(anonymous);
     p.setText("%spark val df=sqlContext.createDataFrame(Seq((\"hello\",20)))\n" +
+        "df.registerTempTable(\"test_table\")\n" +
         "z.show(df)");
     note.run(p.getId(), true);
     assertEquals(Status.FINISHED, p.getStatus());
@@ -212,6 +213,22 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       assertEquals(InterpreterResult.Type.TABLE, p.getResult().message().get(0).getType());
       assertEquals("_1\t_2\nhello\t20\n", p.getResult().message().get(0).getData());
     }
+
+    // run sql
+    p = note.addNewParagraph(anonymous);
+    p.setText("%spark.sql(resourceName=table_result) select * from test_table");
+    note.run(p.getId(), true);
+    assertEquals(Status.FINISHED, p.getStatus());
+    assertEquals(InterpreterResult.Type.TABLE, p.getResult().message().get(0).getType());
+    assertEquals("_1\t_2\nhello\t20\n", p.getResult().message().get(0).getData());
+
+    p = note.addNewParagraph(anonymous);
+    p.setText("%spark print(z.get(\"table_result\", " +
+        "classOf[java.util.List[_]]).get(0).toString())");
+    note.run(p.getId(), true);
+    assertEquals(Status.FINISHED, p.getStatus());
+    assertEquals(InterpreterResult.Type.TABLE, p.getResult().message().get(0).getType());
+    assertEquals("_1\t_2\nhello\t20\n", p.getResult().message().get(0).getData());
   }
 
   @Test
