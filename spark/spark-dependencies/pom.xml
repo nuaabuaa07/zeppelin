@@ -311,34 +311,4 @@
     </plugins>
   </build>
 
-  <!--<profiles>-->
-    <!--<profile>-->
-      <!--<id>spark-scala-2.12</id>-->
-      <!--<properties>-->
-        <!--<spark.scala.version>2.12.7</spark.scala.version>-->
-        <!--<spark.scala.binary.version>2.12</spark.scala.binary.version>-->
-      <!--</properties>-->
-    <!--</profile>-->
-
-    <!--<profile>-->
-      <!--<id>spark-scala-2.11</id>-->
-      <!--<activation>-->
-        <!--<activeByDefault>true</activeByDefault>-->
-      <!--</activation>-->
-      <!--<properties>-->
-        <!--<spark.scala.version>2.11.8</spark.scala.version>-->
-        <!--<spark.scala.binary.version>2.11</spark.scala.binary.version>-->
-      <!--</properties>-->
-    <!--</profile>-->
-
-    <!--<profile>-->
-      <!--<id>spark-scala-2.10</id>-->
-      <!--<properties>-->
-        <!--<spark.scala.version>2.10.5</spark.scala.version>-->
-        <!--<spark.scala.binary.version>2.10</spark.scala.binary.version>-->
-      <!--</properties>-->
-    <!--</profile>-->
-
-  <!--</profiles>-->
-
 </project>

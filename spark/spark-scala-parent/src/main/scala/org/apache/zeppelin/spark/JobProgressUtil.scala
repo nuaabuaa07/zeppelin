@@ -22,7 +22,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object JobProgressUtil {
 
   def progress(sc: SparkContext, jobGroup : String):Int = {
-    val jobIds = sc.statusTracker.getJobIdsForGroup(jobGroup).toList
+    val jobIds = sc.statusTracker.getJobIdsForGroup(jobGroup)
     val jobs = jobIds.flatMap { id => sc.statusTracker.getJobInfo(id) }
     val stages = jobs.flatMap { job =>
       job.stageIds().flatMap(sc.statusTracker.getStageInfo)

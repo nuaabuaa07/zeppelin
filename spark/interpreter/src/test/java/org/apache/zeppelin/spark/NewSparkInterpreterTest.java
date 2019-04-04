@@ -316,7 +316,7 @@ public class NewSparkInterpreterTest {
         InterpreterResult result = null;
         try {
           result = interpreter.interpret(
-                  "val df = sc.parallelize(1 to 10, 2).foreach(e=>Thread.sleep(1000))", context2);
+                  "val df = sc.parallelize(1 to 20, 10).foreach(e=>Thread.sleep(1000))", context2);
         } catch (InterpreterException e) {
           e.printStackTrace();
         }

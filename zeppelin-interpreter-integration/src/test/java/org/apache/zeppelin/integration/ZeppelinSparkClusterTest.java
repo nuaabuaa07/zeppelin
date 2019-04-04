@@ -580,7 +580,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       }
     }
   }
-  
+
   private void verifySparkVersionNumber() throws IOException {
     Note note = null;
     try {
